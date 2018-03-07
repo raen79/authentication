@@ -4,16 +4,16 @@ RSpec.describe AuthenticationController, type: :routing do
   describe "routing" do
 
     it "routes to #login" do
-      expect(:post => "/login").to route_to("authentication#index")
+      expect(:post => "/api/authentication/login").to route_to("authentication#login")
     end
 
 
     it "routes to #register" do
-      expect(:post => "/register").to route_to("authentication#register")
+      expect(:post => "/api/authentication/register").to route_to("authentication#register")
     end
 
-    it "routes to #refresh_token" do
-      expect(:put => "/refresh_token").to route_to("authentication#refresh_token")
+    it "routes to #verify_token" do
+      expect(:put => "/api/authentication/verify_token").to route_to("authentication#verify_token")
     end
   end
 end

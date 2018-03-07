@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'jwt'
 
 RSpec.describe User, type: :model do
   describe 'Validations' do
@@ -115,13 +114,13 @@ RSpec.describe User, type: :model do
     context 'when email invalid' do
       let(:email) { 'eran.peer79@gmail.com' }
       let(:password) { 'test_password' }
-      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound, 'Couldn\'t find User') }
+      it { is_expected.to be_nil }
     end
 
     context 'when password invalid' do
       let(:email) { 'peere@cardiff.ac.uk' }
       let(:password) { 'wrong_pwd' }
-      it { expect { subject }.to raise_error(ActiveRecord::ActiveRecordError, 'User doesn\'t match password.') }
+      it { is_expected.to be_nil }
     end
   end
   
@@ -139,7 +138,7 @@ RSpec.describe User, type: :model do
     context 'when user does not exist' do
       let(:payload) { { :id => user.id + 1 } }
       let(:jwt) { JWT.encode payload, private_key, 'RS512' }
-      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound, 'Couldn\'t find User') }
+      it { is_expected.to be_nil }
     end
 
     context 'when user exists' do

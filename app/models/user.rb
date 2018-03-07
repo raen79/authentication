@@ -10,19 +10,19 @@ class User < ApplicationRecord
   validate :id_cannot_be_nil
 
   def self.login(email:, password:)
-    user = User.find_by!(:email => email)
+    user = User.find_by(:email => email)
 
-    if user.authenticate(password)
+    if !user.blank? && user.authenticate(password)
       payload = { :id => user.id, :student_id => user.student_id, :lecturer_id => user.lecturer_id, :email => user.email }
       JWT.encode payload, @private_key, 'RS512'
     else
-      raise ActiveRecord::ActiveRecordError, 'User doesn\'t match password.'
+      nil
     end
   end
 
   def self.find_by_jwt(jwt)
     jwt = JWT.decode jwt, @public_key, true, { :algorithm => 'RS512' }
-    User.find_by!(:id => jwt[0]['id'])
+    User.find_by(:id => jwt[0]['id'])
   end
 
   private
