@@ -178,6 +178,9 @@ GEM
     tilt (2.0.8)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    valid_email2 (2.2.2)
+      activemodel (>= 3.2)
+      mail (~> 2.5)
     webmock (3.3.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -210,6 +213,7 @@ DEPENDENCIES
   sprockets-rails
   swaggard
   tzinfo-data
+  valid_email2
   webmock
 
 BUNDLED WITH
