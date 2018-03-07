@@ -203,6 +203,7 @@ DEPENDENCIES
   rspec-rails (~> 3.7)
   spring
   spring-watcher-listen (~> 2.0.0)
+  sprockets-rails
   swaggard
   tzinfo-data
   webmock
