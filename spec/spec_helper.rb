@@ -13,7 +13,6 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration]
-require 'support/factory_bot'
 require 'pry'
 require 'webmock/rspec'
 
