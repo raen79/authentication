@@ -1,12 +1,23 @@
-require 'mail'
-
 class User < ApplicationRecord
+  @private_key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n"))
+
   before_validation :upcase
   has_secure_password
 
   validates :email, :presence => true, :uniqueness => true, 'valid_email_2/email' => true
   validates :password, :length => { :minimum => 8 }
   validate :id_cannot_be_nil
+
+  def self.login(email:, password:)
+    user = User.find_by!(:email => email)
+
+    if user.authenticate(password)
+      payload = { :id => user.id, :student_id => user.student_id, :lecturer_id => user.lecturer_id, :email => user.email }
+      JWT.encode payload, @private_key, 'RS512'
+    else
+      raise ActiveRecord::ActiveRecordError, 'User doesn\'t match password.'
+    end
+  end
 
   private
     def upcase

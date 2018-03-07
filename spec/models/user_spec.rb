@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'jwt'
 
 RSpec.describe User, type: :model do
   describe 'Validations' do
@@ -81,6 +82,46 @@ RSpec.describe User, type: :model do
     context 'when invalid' do
       subject { FactoryBot.create :user, :email => '@test.com' }
       it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid).and change { User.count }.by(0) }
+    end
+  end
+
+  describe '.login' do
+    let!(:user) do
+      FactoryBot.create :user, :email => 'peere@cardiff.ac.uk',
+                               :password => 'test_password',
+                               :password_confirmation => 'test_password'
+    end
+    
+    subject { User.login(:email => email, :password => password) }
+
+    context 'when email parameter not provided' do
+      subject { User.login(:password => 'abcxyz##!!') }
+      it { expect { subject }.to raise_error(ArgumentError) }
+    end
+
+    context 'when password parameter not provided' do
+      subject { User.login(:email => 'peere@cardiff.ac.uk') }
+      it { expect { subject }.to raise_error(ArgumentError) }
+    end
+
+    context 'when valid' do
+      let(:email) { 'peere@cardiff.ac.uk' }
+      let(:password) { 'test_password' }
+      let(:private_key) { OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")) }
+      let(:payload) { { :id => user.id, :student_id => user.student_id, :lecturer_id => user.lecturer_id, :email => user.email } }
+      it { is_expected.to eq(JWT.encode payload, private_key, 'RS512') }
+    end
+
+    context 'when email invalid' do
+      let(:email) { 'eran.peer79@gmail.com' }
+      let(:password) { 'test_password' }
+      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound, 'Couldn\'t find User') }
+    end
+
+    context 'when password invalid' do
+      let(:email) { 'peere@cardiff.ac.uk' }
+      let(:password) { 'wrong_pwd' }
+      it { expect { subject }.to raise_error(ActiveRecord::ActiveRecordError, 'User doesn\'t match password.') }
     end
   end
 end
