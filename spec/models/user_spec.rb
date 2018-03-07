@@ -124,4 +124,33 @@ RSpec.describe User, type: :model do
       it { expect { subject }.to raise_error(ActiveRecord::ActiveRecordError, 'User doesn\'t match password.') }
     end
   end
+  
+  describe '.find_by_jwt' do
+    let!(:user) do
+      FactoryBot.create :user, :email => 'peere@cardiff.ac.uk',
+                               :password => 'test_password',
+                               :password_confirmation => 'test_password'
+    end
+
+    let(:private_key) { OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")) }
+
+    subject { User.find_by_jwt(jwt) }
+
+    context 'when user does not exist' do
+      let(:payload) { { :id => user.id + 1 } }
+      let(:jwt) { JWT.encode payload, private_key, 'RS512' }
+      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound, 'Couldn\'t find User') }
+    end
+
+    context 'when user exists' do
+      let(:payload) { { :id => user.id } }
+      let(:jwt) { JWT.encode payload, private_key, 'RS512' }
+      it { is_expected.to eq(user) }
+    end
+
+    context 'when not valid jwt' do
+      let(:jwt) { 'fake_jwt' }
+      it { expect { subject }.to raise_error(JWT::DecodeError) }
+    end
+  end
 end

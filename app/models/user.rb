@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   @private_key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n"))
+  @public_key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n"))
 
   before_validation :upcase
   has_secure_password
@@ -17,6 +18,11 @@ class User < ApplicationRecord
     else
       raise ActiveRecord::ActiveRecordError, 'User doesn\'t match password.'
     end
+  end
+
+  def self.find_by_jwt(jwt)
+    jwt = JWT.decode jwt, @public_key, true, { :algorithm => 'RS512' }
+    User.find_by!(:id => jwt[0]['id'])
   end
 
   private
