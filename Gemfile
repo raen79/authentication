@@ -35,6 +35,7 @@ group :development, :test do
   gem 'webmock'
   gem 'rspec-rails', '~> 3.7'
   gem 'papers'
+  gem 'pry-rails'
 end
 
 group :development do
