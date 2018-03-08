@@ -1,8 +1,8 @@
-# @tag Faqs
+# @tag Authentication
 # API for authenticating users.
 class AuthenticationController < ApplicationController
   # Returns a jwt token with expiration of 4 hours
-  # @body_parameter [Login] login
+  # @body_parameter [LoginParams] login
   # @response_status 200
   # @response_class JwtResponse
   def login
