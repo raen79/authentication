@@ -1,3 +1,3 @@
 # @attr [string] jwt
-class Jwt
+class JwtResponse
 end

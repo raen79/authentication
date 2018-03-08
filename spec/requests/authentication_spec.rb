@@ -49,4 +49,23 @@ RSpec.describe 'Authentication', type: :request do
       it { expect { request }.to change { User.count }.by(1) }
     end
   end
+
+  #TODO!!
+  describe 'PUT /authentication/verify_token' do
+    let!(:request) { put verify_token_path, :params => { :jwt => { :token => token } }, :headers => default_headers }
+    subject { JSON.parse(response.body) }
+
+    context 'when token expired' do
+      let(:token) { jwt_token(user_attributes.merge(:exp => Time.now.to_i - 4 * 3600)) }
+      it { expect(response).to have_http_status(:unprocessable_entity) }
+      it { is_expected.to include('error' => 'User could not be found or JWT expired') }
+    end
+
+    context 'when token valid' do
+      let(:token) { jwt_token(user_attributes) }
+      it { expect(response).to have_http_status(:ok) }
+      it { is_expected.not_to include(token) }
+      it { is_expected.to include('jwt') }
+    end
+  end
 end
