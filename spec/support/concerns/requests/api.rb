@@ -24,11 +24,15 @@ module API
   end
 
   def attributes_of(instance)
-    instance.attributes.except('created_at', 'updated_at')
+    instance.attributes.except('created_at', 'updated_at', 'password_digest')
   end
 
   def jwt_token(user_attributes)
     JWT.encode user_attributes, private_key, 'RS512'
+  end
+
+  def token_payload(jwt)
+    JWT.decode(jwt, public_key, true, { :algorithm => 'RS512' })[0]
   end
 
   def public_key

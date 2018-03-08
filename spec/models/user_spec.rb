@@ -106,9 +106,10 @@ RSpec.describe User, type: :model do
     context 'when valid' do
       let(:email) { 'peere@cardiff.ac.uk' }
       let(:password) { 'test_password' }
-      let(:private_key) { OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")) }
-      let(:payload) { { :id => user.id, :student_id => user.student_id, :lecturer_id => user.lecturer_id, :email => user.email } }
-      it { is_expected.to eq(JWT.encode payload, private_key, 'RS512') }
+      let(:public_key) { OpenSSL::PKey::RSA.new(ENV['RSA_PUBLIC_KEY'].gsub('\n', "\n")) }
+      let(:payload) { JWT.decode(subject, public_key, true, { :algorithm => 'RS512' })[0] }
+      let(:expected_payload) { { 'id' => user.id, 'student_id' => user.student_id, 'lecturer_id' => user.lecturer_id, 'email' => user.email } }
+      it { expect(payload).to include(payload) }
     end
 
     context 'when email invalid' do

@@ -93,4 +93,15 @@ Swaggard.configure do |config|
   # Specify whether to cache the Swagger docs or not.
   # See https://github.com/adrian-gomez/swaggard#caching for more info
   # config.use_cache = false
+
+  config.contact_name = "Eran Peer"
+  config.description = "Api for a tutor chatbot that can answer a student's answers for a certain coursework. Should include `Authorization` header with a jwt token retrieved from an authentication service at each request."
+  config.models_paths = ["#{Rails.root}/app/models/**/*.rb"]
+  config.controllers_path = "#{Rails.root}/app/controllers/**/*.rb"
+  config.title = 'Authentication'
+  config.api_base_path = '???.herokuapp.com/api'
+  config.default_content_type = 'application/json'
+  config.api_formats = [:json]
+  config.use_cache = Rails.env.production?
+  config.additional_parameters = [{ key: 'Authorization', type: 'header', value: 'insert jwt token here' }]
 end

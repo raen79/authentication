@@ -1,3 +1,9 @@
+# @attr [string] email
+# @attr [string] student_id
+# @attr [string] lecturer_id
+# @attr [string] password
+# @attr [string] password_confirmation
+
 class User < ApplicationRecord
   @private_key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n"))
   @public_key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n"))
@@ -13,7 +19,13 @@ class User < ApplicationRecord
     user = User.find_by(:email => email)
 
     if !user.blank? && user.authenticate(password)
-      payload = { :id => user.id, :student_id => user.student_id, :lecturer_id => user.lecturer_id, :email => user.email }
+      payload = {
+        :id => user.id,
+        :student_id => user.student_id,
+        :lecturer_id => user.lecturer_id,
+        :email => user.email,
+        :exp => Time.now.to_i + 4 * 3600
+      }
       JWT.encode payload, @private_key, 'RS512'
     else
       nil
