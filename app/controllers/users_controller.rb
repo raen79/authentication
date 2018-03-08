@@ -1,53 +1,54 @@
+# @tag Users
+# API for searching through users.
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, :only => [:show]
 
-  # GET /users
-  # GET /users.json
+  # Returns a user based on query string params
+  # @query_parameter [string] jwt
+  # @query_parameter [string] lecturer_id
+  # @query_parameter [string] student_id
+  # @query_parameter [string] email
+  # @response_status 200
+  # @response_class UserResponse
+  # There is no need to enter more than one query parameter, only the first will be used and the rest ignored
   def index
-    @users = User.all
+    [:lecturer_id, :student_id, :email, :jwt].each do |param|
+      unless search_params[param].blank?
+        if param == :jwt
+          @user = User.find_by_jwt(search_params[:jwt])
+        else
+          @user = User.find_by(param => search_params[param])
+        end
+
+        break
+      end
+    end
+    
+    if @user.blank?
+      render :status => :not_found
+    else
+      render :status => :ok
+    end
   end
 
-  # GET /users/1
-  # GET /users/1.json
+  # Returns a user based on their id
+  # @response_status 200
+  # @response_class UserResponse
   def show
-  end
-
-  # POST /users
-  # POST /users.json
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      render :show, status: :created, location: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /users/1
-  # PATCH/PUT /users/1.json
-  def update
-    if @user.update(user_params)
-      render :show, status: :ok, location: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /users/1
-  # DELETE /users/1.json
-  def destroy
-    @user.destroy
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      begin
+        @user = User.find(params[:id])
+      rescue
+        head :not_found
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def user_params
-      params.fetch(:user, {})
+    def search_params
+      params.permit(:jwt, :lecturer_id, :student_id, :email)
     end
 end

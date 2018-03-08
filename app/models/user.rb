@@ -13,6 +13,8 @@ class User < ApplicationRecord
 
   validates :email, :presence => true, :uniqueness => true, 'valid_email_2/email' => true
   validates :password, :length => { :minimum => 8 }
+  validates :lecturer_id, :uniqueness => true, :allow_nil => true
+  validates :student_id, :uniqueness => true, :allow_nil => true
   validate :id_cannot_be_nil
 
   def self.login(email:, password:)

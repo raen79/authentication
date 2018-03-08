@@ -50,7 +50,6 @@ RSpec.describe 'Authentication', type: :request do
     end
   end
 
-  #TODO!!
   describe 'PUT /authentication/verify_token' do
     let!(:request) { put verify_token_path, :params => { :jwt => { :token => token } }, :headers => default_headers }
     subject { JSON.parse(response.body) }
