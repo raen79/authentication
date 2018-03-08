@@ -15,7 +15,8 @@ module API
     {
       :email => 'eran.peer79@gmail.com',
       :lecturer_id => 'C1529345',
-      :student_id => 'C1529373'
+      :student_id => 'C1529373',
+      :exp => Time.now.to_i + 4 * 3600
     }
   end
 

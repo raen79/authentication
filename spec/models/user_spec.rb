@@ -153,4 +153,26 @@ RSpec.describe User, type: :model do
       it { expect { subject }.to raise_error(JWT::DecodeError) }
     end
   end
+
+  describe '.refresh_jwt' do
+    let!(:user) do
+      FactoryBot.create :user, :email => 'peere@cardiff.ac.uk',
+                               :password => 'test_password',
+                               :password_confirmation => 'test_password'
+    end
+    
+    let(:private_key) { OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")) }
+
+    subject { User.refresh_jwt(jwt) }
+
+    context 'when jwt expired' do
+      let(:jwt) { jwt_token(attributes_of(user).merge(:exp => Time.now.to_i - 4 * 3600)) }
+      it { is_expected.to be_nil }
+    end
+
+    context 'when jwt valid' do
+      let(:jwt) { jwt_token(attributes_of(user).merge(:exp => Time.now.to_i + 4 * 3600)) }
+      it { is_expected.not_to be_nil }
+    end
+  end
 end

@@ -37,6 +37,16 @@ class User < ApplicationRecord
     User.find_by(:id => jwt[0]['id'])
   end
 
+  def self.refresh_jwt(jwt)
+    begin
+      jwt_to_refresh = JWT.decode jwt, @public_key, true, { :algorithm => 'RS512' }
+      payload = jwt_to_refresh[0].merge('exp' => Time.now.to_i + 4 * 3600)
+      JWT.encode payload, @private_key, 'RS512'
+    rescue JWT::ExpiredSignature
+      nil
+    end
+  end
+
   private
     def upcase
       [student_id, lecturer_id].each do |id|
