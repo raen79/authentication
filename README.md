@@ -1,5 +1,5 @@
-# Tutor Chatbot
-> A tutor chatbot microservice that responds to student answers about coursework.
+# Authentication
+> Api for an authentication service that allows for the registration/authentication of users and their retrieval.
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/027f7a8ce9ba3713711c/maintainability)](https://codeclimate.com/github/raen79/authentication/maintainability)
 ## Getting Started
