@@ -95,7 +95,7 @@ Swaggard.configure do |config|
   # config.use_cache = false
 
   config.contact_name = "Eran Peer"
-  config.description = "Api for a tutor chatbot that can answer a student's answers for a certain coursework."
+  config.description = "Api for an authentication service that allows for the registration/authentication of users and their retrieval."
   config.models_paths = ["#{Rails.root}/app/models/**/*.rb"]
   config.controllers_path = "#{Rails.root}/app/controllers/**/*.rb"
   config.title = 'Authentication'
