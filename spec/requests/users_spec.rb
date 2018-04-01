@@ -6,6 +6,7 @@ RSpec.describe 'Users', type: :request do
     let!(:user_lecturer_id) { FactoryBot.create :user, :student_id => nil, :lecturer_id => 'C1529373', :email => 'peere@cardiff.ac.uk' }
     let!(:user_student_id) { FactoryBot.create :user, :student_id => 'C1529373', :lecturer_id => nil, :email => 'ceere@cardiff.ac.uk' }
     let!(:user_email) { FactoryBot.create :user, :student_id => 'C1529371', :lecturer_id => nil, :email => 'zeere@cardiff.ac.uk' }
+    let!(:user_id) { FactoryBot.create :user, :student_id => 'C1529372', :lecturer_id => nil, :email => 'seere@cardiff.ac.uk' }
     let!(:request) { get users_path, :params => query_params, :headers => default_headers }
 
     subject { JSON.parse(response.body) }
@@ -68,7 +69,23 @@ RSpec.describe 'Users', type: :request do
       end
 
       context 'when does not exist' do
-        let(:jwt) { jwt_token(attributes_of(user_email).merge(:id => user_email.id + 1)) }
+        let(:jwt) { jwt_token(attributes_of(user_email).merge(:id => user_email.id + 2)) }
+        it { expect(response).to have_http_status(:not_found) }
+        it { is_expected.to include('error' => 'could not find the user with the parameters provided') }
+      end
+    end
+
+    context 'when searching by id' do
+      let(:query_params) { { :id => id } }
+
+      context 'when exists' do
+        let(:id) { user_id.id }
+        it { expect(response).to have_http_status(:ok) }
+        it { is_expected.to include(attributes_of(user_id)) }
+      end
+
+      context 'when does not exist' do
+        let(:id) { user_id.id + 1 }
         it { expect(response).to have_http_status(:not_found) }
         it { is_expected.to include('error' => 'could not find the user with the parameters provided') }
       end

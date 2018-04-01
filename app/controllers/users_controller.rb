@@ -16,8 +16,6 @@ class UsersController < ApplicationController
       unless search_params[param].blank?
         if param == :jwt
           @user = User.find_by_jwt(search_params[:jwt])
-        elsif param == :id
-          @user = User.find(search_params[:id])
         else
           @user = User.find_by(param => search_params[param])
         end
@@ -51,6 +49,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def search_params
-      params.permit(:jwt, :lecturer_id, :student_id, :email)
+      params.permit(:id, :jwt, :lecturer_id, :student_id, :email)
     end
 end
