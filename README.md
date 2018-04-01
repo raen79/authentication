@@ -1,6 +1,7 @@
 # Authentication
 > Api for an authentication service that allows for the registration/authentication of users and their retrieval.
 
+[![Build Status](https://travis-ci.org/raen79/authentication.svg?branch=master)](https://travis-ci.org/raen79/authentication)
 [![Maintainability](https://api.codeclimate.com/v1/badges/027f7a8ce9ba3713711c/maintainability)](https://codeclimate.com/github/raen79/authentication/maintainability)
 ## Getting Started
 ### Prerequisites
