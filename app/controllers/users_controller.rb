@@ -16,6 +16,8 @@ class UsersController < ApplicationController
       unless search_params[param].blank?
         if param == :jwt
           @user = User.find_by_jwt(search_params[:jwt])
+        elsif param == :id
+          @user = User.find(search_params[:id])
         else
           @user = User.find_by(param => search_params[param])
         end
