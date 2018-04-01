@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   # @response_class UserResponse
   # There is no need to enter more than one query parameter, only the first will be used and the rest ignored
   def index
-    [:lecturer_id, :student_id, :email, :jwt].each do |param|
+    [:id, :lecturer_id, :student_id, :email, :jwt].each do |param|
       unless search_params[param].blank?
         if param == :jwt
           @user = User.find_by_jwt(search_params[:jwt])
